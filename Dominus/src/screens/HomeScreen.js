@@ -13,28 +13,78 @@ import {
   Ionicons
 } from '@expo/vector-icons';
 
+import Header from '../components/Header';
+
 export default function HomeScreen() {
+
+  // =========================
+  // DATA ATUAL
+  // =========================
+
+  const hoje = new Date();
+
+  // Encontra o domingo da semana atual
+  const inicioSemana = new Date(hoje);
+  inicioSemana.setDate(
+    hoje.getDate() - hoje.getDay()
+  );
+
+  // Cria os 7 dias da semana
+  const diasSemana = Array.from(
+    { length: 7 },
+    (_, index) => {
+      const data = new Date(inicioSemana);
+
+      data.setDate(
+        inicioSemana.getDate() + index
+      );
+
+      return data;
+    }
+  );
+
+  // Nome dos dias
+  const nomesDias = [
+    'Dom',
+    'Seg',
+    'Ter',
+    'Qua',
+    'Qui',
+    'Sex',
+    'Sáb'
+  ];
+
+  // Formata as datas do cabeçalho
+  const formatarData = (data) => {
+    return data.toLocaleDateString('pt-BR', {
+      day: 'numeric',
+      month: 'long',
+    });
+  };
+
   return (
     <View style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
 
-        {/* HEADER */}
-        <View style={styles.header}>
-          <Ionicons
-            name="business"
-            size={55}
-            color="#D8B36A"
-          />
+      {/* =========================
+          HEADER
+      ========================= */}
 
-          <Text style={styles.logoText}>
-            Dominus
-          </Text>
-        </View>
+      <Header title="Início" />
 
-        {/* CALENDÁRIO */}
+
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+      >
+
+
+        {/* =========================
+            CALENDÁRIO
+        ========================= */}
+
         <View style={styles.section}>
 
           <View style={styles.sectionTitle}>
+
             <MaterialIcons
               name="calendar-month"
               size={22}
@@ -44,51 +94,94 @@ export default function HomeScreen() {
             <Text style={styles.title}>
               Calendário
             </Text>
+
           </View>
+
+
+          {/* SEMANA ATUAL */}
 
           <View style={styles.calendarHeader}>
+
             <Text style={styles.calendarMonth}>
-              Maio 5 - Maio 11
+              {formatarData(diasSemana[0])} - {formatarData(diasSemana[6])}
             </Text>
+
           </View>
+
+
+          {/* DIAS DA SEMANA */}
 
           <View style={styles.calendar}>
-            {['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].map(day => (
-              <Text key={day} style={styles.day}>
-                {day}
-              </Text>
-            ))}
 
-            {[5,6,7,8,9,10,11].map(num => (
-              <View
-                key={num}
-                style={num === 8 ? styles.activeDay : styles.dayBox}
-              >
-                <Text
-                  style={
-                    num === 8
-                    ? styles.activeDayText
-                    : styles.dayNumber
-                  }
+            {diasSemana.map((data, index) => {
+
+              const ehHoje =
+                data.toDateString() ===
+                hoje.toDateString();
+
+              return (
+                <View
+                  key={data.toISOString()}
+                  style={styles.calendarColumn}
                 >
-                  {num}
-                </Text>
-              </View>
-            ))}
+
+                  {/* NOME DO DIA */}
+
+                  <Text style={styles.day}>
+                    {nomesDias[index]}
+                  </Text>
+
+
+                  {/* NÚMERO DO DIA */}
+
+                  <View
+                    style={
+                      ehHoje
+                        ? styles.activeDay
+                        : styles.dayBox
+                    }
+                  >
+
+                    <Text
+                      style={
+                        ehHoje
+                          ? styles.activeDayText
+                          : styles.dayNumber
+                      }
+                    >
+                      {data.getDate()}
+                    </Text>
+
+                  </View>
+
+                </View>
+              );
+
+            })}
+
           </View>
 
+
           <TouchableOpacity>
+
             <Text style={styles.link}>
               Ver calendário completo
             </Text>
+
           </TouchableOpacity>
 
         </View>
 
-        {/* EVENTOS */}
+
+
+        {/* =========================
+            EVENTOS
+        ========================= */}
+
         <View style={styles.section}>
 
           <View style={styles.sectionTitle}>
+
             <FontAwesome5
               name="calendar-alt"
               size={18}
@@ -98,7 +191,9 @@ export default function HomeScreen() {
             <Text style={styles.title}>
               Próximos Eventos
             </Text>
+
           </View>
+
 
           <View style={styles.card}>
 
@@ -126,10 +221,16 @@ export default function HomeScreen() {
 
         </View>
 
-        {/* AVISOS */}
+
+
+        {/* =========================
+            AVISOS
+        ========================= */}
+
         <View style={styles.section}>
 
           <View style={styles.sectionTitle}>
+
             <Ionicons
               name="notifications"
               size={20}
@@ -139,7 +240,9 @@ export default function HomeScreen() {
             <Text style={styles.title}>
               Avisos Paroquiais
             </Text>
+
           </View>
+
 
           <View style={styles.notice}>
 
@@ -152,6 +255,7 @@ export default function HomeScreen() {
             </Text>
 
           </View>
+
 
           <View style={styles.notice}>
 
@@ -168,120 +272,170 @@ export default function HomeScreen() {
         </View>
 
       </ScrollView>
+
     </View>
   );
 }
 
+
+
 const styles = StyleSheet.create({
+
+  // =========================
+  // CONTAINER
+  // =========================
 
   container: {
     flex: 1,
-    backgroundColor: '#F5F0EA'
+    backgroundColor: '#F5F0EA',
   },
 
-  header: {
-    backgroundColor: '#7A0D18',
-    height: 150,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
 
-  logoText: {
-    color: '#FFF',
-    fontSize: 32,
-    fontWeight: 'bold'
-  },
+  // =========================
+  // SEÇÕES
+  // =========================
 
   section: {
-    padding: 15
+    padding: 15,
   },
+
 
   sectionTitle: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10
+    marginBottom: 10,
   },
+
 
   title: {
     marginLeft: 8,
     fontSize: 18,
     color: '#7A0D18',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
+
+
+  // =========================
+  // CABEÇALHO DO CALENDÁRIO
+  // =========================
 
   calendarHeader: {
     backgroundColor: '#7A0D18',
     padding: 8,
-    borderRadius: 5
+    borderRadius: 5,
   },
+
 
   calendarMonth: {
     color: '#FFF',
-    textAlign: 'center'
+    textAlign: 'center',
+    fontWeight: '500',
   },
+
+
+  // =========================
+  // CALENDÁRIO
+  // =========================
 
   calendar: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginTop: 10
+    justifyContent: 'space-between',
+    marginTop: 10,
   },
+
+
+  calendarColumn: {
+    width: '14%',
+    alignItems: 'center',
+  },
+
 
   day: {
-    width: '14%',
     textAlign: 'center',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    color: '#333',
   },
+
 
   dayBox: {
-    width: '14%',
+    width: 28,
+    height: 28,
     alignItems: 'center',
-    marginTop: 10
+    justifyContent: 'center',
+    marginTop: 10,
   },
+
+
+  dayNumber: {
+    color: '#333',
+    fontSize: 15,
+  },
+
+
+  // =========================
+  // DIA ATUAL
+  // =========================
 
   activeDay: {
-    width: '14%',
-    alignItems: 'center',
-    marginTop: 10
-  },
-
-  activeDayText: {
-    backgroundColor: '#7A0D18',
-    color: '#FFF',
     width: 28,
     height: 28,
     borderRadius: 14,
-    textAlign: 'center',
-    lineHeight: 28
+    backgroundColor: '#7A0D18',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
   },
 
-  dayNumber: {
-    color: '#333'
+
+  activeDayText: {
+    color: '#FFF',
+    fontSize: 15,
+    fontWeight: 'bold',
   },
+
+
+  // =========================
+  // LINK
+  // =========================
 
   link: {
     textAlign: 'center',
     marginTop: 15,
-    color: '#7A0D18'
+    color: '#7A0D18',
+    fontWeight: '500',
   },
+
+
+  // =========================
+  // CARD DE EVENTO
+  // =========================
 
   card: {
     backgroundColor: '#FFF',
     borderWidth: 1,
     borderColor: '#DDD',
     borderRadius: 8,
-    padding: 15
+    padding: 15,
   },
+
 
   eventTitle: {
     color: '#A35A00',
     fontWeight: 'bold',
     fontSize: 18,
-    marginBottom: 8
+    marginBottom: 8,
   },
 
+
   info: {
-    marginBottom: 5
+    marginBottom: 5,
+    color: '#333',
   },
+
+
+  // =========================
+  // AVISOS
+  // =========================
 
   notice: {
     backgroundColor: '#FFF',
@@ -289,35 +443,19 @@ const styles = StyleSheet.create({
     borderColor: '#DDD',
     borderRadius: 8,
     padding: 12,
-    marginBottom: 10
+    marginBottom: 10,
   },
+
 
   noticeTitle: {
     color: '#6B2226',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
+
 
   noticeDate: {
     color: '#666',
-    marginTop: 3
+    marginTop: 3,
   },
-
-  bottomMenu: {
-    height: 70,
-    backgroundColor: '#7A0D18',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center'
-  },
-
-  menuItem: {
-    alignItems: 'center'
-  },
-
-  menuText: {
-    color: '#FFF',
-    fontSize: 11,
-    marginTop: 2
-  }
 
 });
