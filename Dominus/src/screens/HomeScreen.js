@@ -88,7 +88,7 @@ export default function HomeScreen() {
             <MaterialIcons
               name="calendar-month"
               size={22}
-              color="#7A0D18"
+              color="#7A0D18" 
             />
 
             <Text style={styles.title}>
