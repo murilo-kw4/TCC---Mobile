@@ -12,6 +12,9 @@ import {
   MaterialIcons
 } from '@expo/vector-icons';
 
+import Header from '../components/Header';
+
+
 export default function AvisosScreen() {
 
   const avisos = [
@@ -63,26 +66,13 @@ export default function AvisosScreen() {
   ];
 
   return (
-    <ScrollView
-      style={styles.container}
-      showsVerticalScrollIndicator={false}
-    >
+    <View style={styles.container}>
 
-      {/* HEADER */}
+      {/* =========================
+          CABEÇALHO
+      ========================= */}
 
-      <View style={styles.header}>
-
-        <Ionicons
-          name="business"
-          size={50}
-          color="#D8B36A"
-        />
-
-        <Text style={styles.headerTitle}>
-          Avisos
-        </Text>
-
-      </View>
+      <Header title="Avisos" />
 
       {/* LISTA */}
 
@@ -132,8 +122,7 @@ export default function AvisosScreen() {
       <Text style={styles.separator}>
         ❦
       </Text>
-
-    </ScrollView>
+      </View>
   );
 }
 

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+
 import {
   View,
   Text,
@@ -13,163 +14,419 @@ import {
   FontAwesome5
 } from '@expo/vector-icons';
 
+import Header from '../components/Header';
+
 export default function CalendarioScreen() {
 
-  const diasSemana = [
-    'Dom','Seg','Ter','Qua','Qui','Sex','Sáb'
+  // =====================================================
+  // DATA ATUAL
+  // =====================================================
+
+  const hoje = new Date();
+
+  // Mês e ano que estão sendo visualizados
+  const [mesAtual, setMesAtual] = useState(hoje.getMonth());
+  const [anoAtual, setAnoAtual] = useState(hoje.getFullYear());
+
+
+  // =====================================================
+  // NOMES
+  // =====================================================
+
+  const meses = [
+    'Janeiro',
+    'Fevereiro',
+    'Março',
+    'Abril',
+    'Maio',
+    'Junho',
+    'Julho',
+    'Agosto',
+    'Setembro',
+    'Outubro',
+    'Novembro',
+    'Dezembro'
   ];
 
-  const dias = [
-    '',1,2,3,4,
-    5,6,7,8,9,10,11,
-    12,13,14,15,16,17,18,
-    19,20,21,22,23,24,25,
-    26,27,28,29,30,31,''
+  const diasSemana = [
+    'Dom',
+    'Seg',
+    'Ter',
+    'Qua',
+    'Qui',
+    'Sex',
+    'Sáb'
   ];
+
+
+  // =====================================================
+  // QUANTIDADE DE DIAS DO MÊS
+  // =====================================================
+
+  const quantidadeDias =
+    new Date(anoAtual, mesAtual + 1, 0).getDate();
+
+
+  // =====================================================
+  // DIA DA SEMANA EM QUE O MÊS COMEÇA
+  // =====================================================
+
+  const primeiroDia =
+    new Date(anoAtual, mesAtual, 1).getDay();
+
+
+  // =====================================================
+  // MONTA OS DIAS DO CALENDÁRIO
+  // =====================================================
+
+  const dias = [];
+
+  // Espaços antes do primeiro dia
+  for (let i = 0; i < primeiroDia; i++) {
+    dias.push(null);
+  }
+
+  // Dias do mês
+  for (let i = 1; i <= quantidadeDias; i++) {
+    dias.push(i);
+  }
+
+
+  // =====================================================
+  // MUDAR MÊS
+  // =====================================================
+
+  const mesAnterior = () => {
+
+    if (mesAtual === 0) {
+
+      setMesAtual(11);
+      setAnoAtual(anoAtual - 1);
+
+    } else {
+
+      setMesAtual(mesAtual - 1);
+
+    }
+
+  };
+
+
+  const proximoMes = () => {
+
+    if (mesAtual === 11) {
+
+      setMesAtual(0);
+      setAnoAtual(anoAtual + 1);
+
+    } else {
+
+      setMesAtual(mesAtual + 1);
+
+    }
+
+  };
+
+
+  // =====================================================
+  // VERIFICA SE É HOJE
+  // =====================================================
+
+  const ehHoje = (dia) => {
+
+    if (!dia) {
+      return false;
+    }
+
+    return (
+      dia === hoje.getDate() &&
+      mesAtual === hoje.getMonth() &&
+      anoAtual === hoje.getFullYear()
+    );
+
+  };
+
+
+  // =====================================================
+  // RETORNO
+  // =====================================================
 
   return (
+
     <View style={styles.container}>
 
-      <ScrollView>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
 
-        {/* HEADER */}
+        {/* =================================================
+            HEADER
+        ================================================= */}
 
-        <View style={styles.header}>
+        <Header title="Calendário" />
 
-          <View style={styles.logoRow}>
-            <View style={styles.line} />
 
-            <Ionicons
-              name="business"
-              size={45}
-              color="#D8B36A"
-            />
-
-            <View style={styles.line} />
-          </View>
-
-          <Text style={styles.headerTitle}>
-            Calendário
-          </Text>
-
-        </View>
-
-        {/* MÊS */}
+        {/* =================================================
+            MÊS
+        ================================================= */}
 
         <View style={styles.monthContainer}>
 
-          <TouchableOpacity>
-            <Text style={styles.arrow}>
-              ◀
-            </Text>
+          <TouchableOpacity
+            onPress={mesAnterior}
+            style={styles.arrowButton}
+          >
+
+            <Ionicons
+              name="chevron-back"
+              size={18}
+              color="#7A0D18"
+            />
+
           </TouchableOpacity>
 
+
           <Text style={styles.month}>
-            Maio 2026
+
+            {meses[mesAtual]} {anoAtual}
+
           </Text>
 
-          <TouchableOpacity>
-            <Text style={styles.arrow}>
-              ▶
-            </Text>
+
+          <TouchableOpacity
+            onPress={proximoMes}
+            style={styles.arrowButton}
+          >
+
+            <Ionicons
+              name="chevron-forward"
+              size={18}
+              color="#7A0D18"
+            />
+
           </TouchableOpacity>
 
         </View>
 
-        {/* CALENDÁRIO */}
+
+        {/* =================================================
+            CALENDÁRIO
+        ================================================= */}
 
         <View style={styles.calendarCard}>
 
+          {/* DIAS DA SEMANA */}
+
           <View style={styles.weekHeader}>
+
             {diasSemana.map((dia) => (
+
               <Text
                 key={dia}
                 style={styles.weekDay}
               >
+
                 {dia}
+
               </Text>
+
             ))}
+
           </View>
 
+
+          {/* DIAS */}
+
           <View style={styles.daysContainer}>
-            {dias.map((dia,index)=>(
+
+            {dias.map((dia, index) => (
+
               <View
                 key={index}
                 style={styles.dayBox}
               >
-                <Text
-                  style={
-                    dia === 12
-                      ? styles.selectedDay
-                      : styles.day
-                  }
-                >
-                  {dia}
-                </Text>
+
+                {dia ? (
+
+                  <View
+                    style={
+                      ehHoje(dia)
+                        ? styles.todayCircle
+                        : styles.normalDay
+                    }
+                  >
+
+                    <Text
+                      style={
+                        ehHoje(dia)
+                          ? styles.todayText
+                          : styles.day
+                      }
+                    >
+
+                      {dia}
+
+                    </Text>
+
+                  </View>
+
+                ) : null}
+
               </View>
+
             ))}
+
           </View>
 
         </View>
 
-        {/* EVENTO */}
+
+        {/* =================================================
+            EVENTO DO DIA
+        ================================================= */}
 
         <View style={styles.eventCard}>
 
-          <Text style={styles.eventTitle}>
-            Missa de São José
-          </Text>
+          <View style={styles.eventTitleRow}>
 
-          <Text style={styles.info}>
-            📅 12 de maio
-          </Text>
+            <FontAwesome5
+              name="church"
+              size={16}
+              color="#284D99"
+            />
 
-          <Text style={styles.info}>
-            📍 Igreja Matriz
-          </Text>
+            <Text style={styles.eventTitle}>
+              Missa de São José
+            </Text>
 
-          <Text style={styles.info}>
-            🕒 19:00 hr
-          </Text>
+          </View>
 
-          <Text style={styles.info}>
-            ℹ Celebração especial
-          </Text>
+
+          <View style={styles.infoRow}>
+
+            <MaterialIcons
+              name="calendar-month"
+              size={20}
+              color="#555"
+            />
+
+            <Text style={styles.info}>
+              12 de maio
+            </Text>
+
+          </View>
+
+
+          <View style={styles.infoRow}>
+
+            <Ionicons
+              name="location"
+              size={20}
+              color="#555"
+            />
+
+            <Text style={styles.info}>
+              Igreja Matriz
+            </Text>
+
+          </View>
+
+
+          <View style={styles.infoRow}>
+
+            <Ionicons
+              name="time-outline"
+              size={20}
+              color="#555"
+            />
+
+            <Text style={styles.info}>
+              19:00 hr
+            </Text>
+
+          </View>
+
+
+          <View style={styles.infoRow}>
+
+            <Ionicons
+              name="information-circle-outline"
+              size={20}
+              color="#555"
+            />
+
+            <Text style={styles.info}>
+              Celebração especial
+            </Text>
+
+          </View>
 
         </View>
 
-        {/* SEPARADOR */}
 
-        <Text style={styles.separator}>
-          ❦
-        </Text>
+        {/* =================================================
+            SEPARADOR
+        ================================================= */}
 
-        {/* BOTÕES */}
+        <View style={styles.separatorContainer}>
+
+          <View style={styles.separatorLine} />
+
+          <Text style={styles.separator}>
+            ❦
+          </Text>
+
+          <View style={styles.separatorLine} />
+
+        </View>
+
+
+        {/* =================================================
+            BOTÕES
+        ================================================= */}
 
         <View style={styles.buttons}>
 
           <TouchableOpacity
-            style={[styles.btn, styles.missa]}
+            style={[
+              styles.btn,
+              styles.missa
+            ]}
           >
+
             <Text style={styles.btnText}>
               + Missa
             </Text>
+
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={[styles.btn, styles.evento]}
-          >
-            <Text style={styles.btnText}>
-              Evento
-            </Text>
-          </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.btn, styles.sacramento]}
+            style={[
+              styles.btn,
+              styles.evento
+            ]}
           >
+
             <Text style={styles.btnText}>
-              Sacramento
+              ▣ Evento
             </Text>
+
+          </TouchableOpacity>
+
+
+          <TouchableOpacity
+            style={[
+              styles.btn,
+              styles.sacramento
+            ]}
+          >
+
+            <Text style={styles.btnText}>
+              ⛪ Sacramento
+            </Text>
+
           </TouchableOpacity>
 
         </View>
@@ -177,156 +434,247 @@ export default function CalendarioScreen() {
       </ScrollView>
 
     </View>
+
   );
+
 }
+
+
+// =====================================================
+// ESTILOS
+// =====================================================
 
 const styles = StyleSheet.create({
 
-  container:{
-    flex:1,
-    backgroundColor:'#F5F0EA'
+  container: {
+    flex: 1,
+    backgroundColor: '#F5F0EA',
   },
 
-  header:{
-    height:150,
-    backgroundColor:'#7A0D18',
-    justifyContent:'center',
-    alignItems:'center'
+
+  scrollContent: {
+    paddingBottom: 30,
   },
 
-  logoRow:{
-    flexDirection:'row',
-    alignItems:'center'
+
+  // ===================================================
+  // MÊS
+  // ===================================================
+
+  monthContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 15,
+    marginBottom: 10,
   },
 
-  line:{
-    width:70,
-    height:1,
-    backgroundColor:'#D8B36A',
-    marginHorizontal:12
+
+  arrowButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 5,
   },
 
-  headerTitle:{
-    color:'#FFF',
-    fontSize:32,
-    fontFamily:'serif'
+
+  month: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#7A0D18',
   },
 
-  monthContainer:{
-    flexDirection:'row',
-    justifyContent:'center',
-    alignItems:'center',
-    marginVertical:15
+
+  // ===================================================
+  // CALENDÁRIO
+  // ===================================================
+
+  calendarCard: {
+    backgroundColor: '#FFF',
+    marginHorizontal: 15,
+    borderWidth: 1,
+    borderColor: '#D8CFC6',
+    borderRadius: 4,
+    overflow: 'hidden',
   },
 
-  arrow:{
-    fontSize:18,
-    color:'#7A0D18',
-    marginHorizontal:15
+
+  weekHeader: {
+    flexDirection: 'row',
+    backgroundColor: '#7A0D18',
   },
 
-  month:{
-    fontWeight:'bold',
-    color:'#7A0D18'
+
+  weekDay: {
+    flex: 1,
+    color: '#FFF',
+    textAlign: 'center',
+    paddingVertical: 5,
+    fontSize: 11,
+    fontWeight: 'bold',
   },
 
-  calendarCard:{
-    backgroundColor:'#FFF',
-    marginHorizontal:15,
-    borderWidth:1,
-    borderColor:'#DDD'
+
+  daysContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
 
-  weekHeader:{
-    flexDirection:'row',
-    backgroundColor:'#7A0D18'
+
+  dayBox: {
+    width: '14.2857%',
+    height: 38,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: '#E5DED7',
   },
 
-  weekDay:{
-    flex:1,
-    color:'#FFF',
-    textAlign:'center',
-    paddingVertical:5,
-    fontSize:12
+
+  normalDay: {
+    width: 25,
+    height: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
-  daysContainer:{
-    flexDirection:'row',
-    flexWrap:'wrap'
+
+  day: {
+    color: '#444',
+    fontSize: 11,
   },
 
-  dayBox:{
-    width:'14.28%',
-    height:38,
-    justifyContent:'center',
-    alignItems:'center'
+
+  // ===================================================
+  // DIA ATUAL
+  // ===================================================
+
+  todayCircle: {
+    width: 25,
+    height: 25,
+    borderRadius: 13,
+    backgroundColor: '#7A0D18',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
-  day:{
-    color:'#444'
+
+  todayText: {
+    color: '#FFF',
+    fontSize: 11,
+    fontWeight: 'bold',
   },
 
-  selectedDay:{
-    backgroundColor:'#284D99',
-    color:'#FFF',
-    paddingHorizontal:8,
-    paddingVertical:4,
-    borderRadius:4
+
+  // ===================================================
+  // EVENTO
+  // ===================================================
+
+  eventCard: {
+    backgroundColor: '#FFF',
+    marginHorizontal: 15,
+    marginTop: 10,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#D8CFC6',
+    borderRadius: 5,
   },
 
-  eventCard:{
-    backgroundColor:'#FFF',
-    margin:15,
-    padding:15,
-    borderWidth:1,
-    borderColor:'#DDD'
+
+  eventTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
   },
 
-  eventTitle:{
-    color:'#284D99',
-    fontWeight:'bold',
-    fontSize:20,
-    marginBottom:10
+
+  eventTitle: {
+    color: '#284D99',
+    fontWeight: 'bold',
+    fontSize: 17,
+    marginLeft: 7,
   },
 
-  info:{
-    marginBottom:5,
-    fontSize:16
+
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
   },
 
-  separator:{
-    textAlign:'center',
-    color:'#C7A46B',
-    fontSize:22
+
+  info: {
+    marginLeft: 6,
+    fontSize: 14,
+    color: '#222',
   },
 
-  buttons:{
-    flexDirection:'row',
-    justifyContent:'space-around',
-    marginVertical:20
+
+  // ===================================================
+  // SEPARADOR
+  // ===================================================
+
+  separatorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 15,
+    marginVertical: 8,
   },
 
-  btn:{
-    paddingVertical:8,
-    paddingHorizontal:15,
-    borderRadius:4
+
+  separatorLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#C7B9AA',
   },
 
-  missa:{
-    backgroundColor:'#284D99'
+
+  separator: {
+    color: '#C7A46B',
+    fontSize: 20,
+    marginHorizontal: 8,
   },
 
-  evento:{
-    backgroundColor:'#D57A18'
+
+  // ===================================================
+  // BOTÕES
+  // ===================================================
+
+  buttons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 15,
+    marginTop: 5,
   },
 
-  sacramento:{
-    backgroundColor:'#657A39'
+
+  btn: {
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 2,
+    minWidth: 75,
+    alignItems: 'center',
   },
 
-  btnText:{
-    color:'#FFF',
-    fontWeight:'bold'
-  }
+
+  missa: {
+    backgroundColor: '#284D99',
+  },
+
+
+  evento: {
+    backgroundColor: '#D57A18',
+  },
+
+
+  sacramento: {
+    backgroundColor: '#657A39',
+  },
+
+
+  btnText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    fontSize: 11,
+  },
 
 });

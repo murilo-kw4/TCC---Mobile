@@ -25,12 +25,14 @@ export default function Header({ title }) {
           style={styles.logo}
           resizeMode="contain"
         />
+    
 
         <Text style={styles.titulo}>
           {title}
         </Text>
-
       </View>
+
+      <View style={styles.linha} />
 
     </ImageBackground>
   );
@@ -44,7 +46,7 @@ const styles = StyleSheet.create({
    */
   header: {
     width: '100%',
-    height: 145,
+    height: 130,
   },
 
   /*
@@ -61,7 +63,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 5,
+    paddingTop: 15,
   },
 
   /*
@@ -70,9 +72,9 @@ const styles = StyleSheet.create({
    * Tamanho visual no aplicativo: 95 x 95 px
    */
   logo: {
-    width: 450,
-    height: 450,
-    marginBottom: -10,
+    width: 400,
+    height: 400,
+    marginBottom: 5,
   },
 
   /*
@@ -84,7 +86,14 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     textAlign: 'center',
     position: 'absolute',
-    marginTop: '70'
+    marginTop: '58'
   },
+
+linha: {
+  height: 0.6,
+  backgroundColor: '#EEDC82',
+  width: '100%',
+  marginVertical: 3,
+},
 
 });

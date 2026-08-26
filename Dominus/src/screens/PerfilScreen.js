@@ -15,6 +15,8 @@ import {
   Feather
 } from '@expo/vector-icons';
 
+import Header from '../components/Header';
+
 export default function PerfilScreen() {
 
   return (
@@ -23,21 +25,11 @@ export default function PerfilScreen() {
       showsVerticalScrollIndicator={false}
     >
 
-      {/* HEADER */}
+      {/* =========================
+          CABEÇALHO
+      ========================= */}
 
-      <View style={styles.header}>
-
-        <Ionicons
-          name="business"
-          size={50}
-          color="#D8B36A"
-        />
-
-        <Text style={styles.headerTitle}>
-          Perfil
-        </Text>
-
-      </View>
+<Header title="Perfil" />
 
       {/* PERFIL */}
 

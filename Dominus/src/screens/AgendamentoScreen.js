@@ -14,6 +14,8 @@ import {
   MaterialIcons
 } from '@expo/vector-icons';
 
+import Header from '../components/Header';
+
 export default function AgendamentoScreen() {
 
   const [nome, setNome] = useState('');
@@ -28,21 +30,11 @@ export default function AgendamentoScreen() {
       showsVerticalScrollIndicator={false}
     >
 
-      {/* HEADER */}
+      {/* =========================
+          CABEÇALHO
+      ========================= */}
 
-      <View style={styles.header}>
-
-        <Ionicons
-          name="business"
-          size={50}
-          color="#D8B36A"
-        />
-
-        <Text style={styles.headerTitle}>
-          Agendamento
-        </Text>
-
-      </View>
+<Header title="Agendamento" />
 
       <Text style={styles.separator}>
         ❦

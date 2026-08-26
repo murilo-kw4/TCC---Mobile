@@ -7,6 +7,9 @@ import {
   StyleSheet,
 } from 'react-native';
 
+import Header from '../components/Header';
+
+
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 export default function LoginScreen({ navigation }) {
@@ -15,11 +18,11 @@ export default function LoginScreen({ navigation }) {
   return (
     <View style={styles.container}>
 
-      {/* HEADER */}
-      <View style={styles.header}>
-        <Ionicons name="business" size={55} color="#D8B36A" />
-        <Text style={styles.title}>Login</Text>
-      </View>
+      {/* =========================
+          CABEÇALHO
+      ========================= */}
+
+<Header title="Perfil" />
 
       {/* DECORAÇÃO */}
       <Text style={styles.separator}>❦</Text>
